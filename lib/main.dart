@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,6 +30,9 @@ class BMICalculator extends StatefulWidget {
 class _BMICalculatorState extends State<BMICalculator> {
   int currentIndex = 0;
   Color primary = Colors.blue;
+  String bmi = "";
+  TextEditingController heightController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -67,11 +69,54 @@ class _BMICalculatorState extends State<BMICalculator> {
                   margin: const EdgeInsets.only(top: 20.0),
                   child: TextField(
                     keyboardType: TextInputType.number,
+                    controller: heightController,
                     decoration: InputDecoration(
-                      labelText: "Your height in cms",
-                      filled: true,
-                      fillColor: Colors.grey[200]
+                        labelText: "Your height in meters",
+                        filled: true,
+                        fillColor: Colors.grey[200]),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 20.0),
+                  child: TextField(
+                    keyboardType: TextInputType.number,
+                    controller: weightController,
+                    decoration: InputDecoration(
+                        labelText: "Your weight in kgs",
+                        filled: true,
+                        fillColor: Colors.grey[200]),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 20.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      double height = double.parse(heightController.value.text);
+                      double weight = double.parse(weightController.value.text);
+                      calculate(weight, height);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Text(
+                        "Calculate",
+                        style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
                     ),
+                    style: ElevatedButton.styleFrom(primary: primary),
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 40.0),
+                  child: Text(
+                    "Your BMI is $bmi",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0),
                   ),
                 ),
               ],
@@ -80,6 +125,12 @@ class _BMICalculatorState extends State<BMICalculator> {
         ),
       ),
     );
+  }
+
+  void calculate(double weight, double height) {
+    setState(() {
+      bmi = (weight / (height * height)).toStringAsFixed(2);
+    });
   }
 
   void changeIndex(int newIndex) {
